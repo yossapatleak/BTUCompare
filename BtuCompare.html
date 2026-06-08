@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>เปรียบเทียบแอร์ มอก.</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#020817;color:#e2e8f0;font-family:'Sarabun',sans-serif;min-height:100vh;padding:22px 14px 56px;-webkit-text-size-adjust:100%}
+h1{font-size:20px;font-weight:700;letter-spacing:-.5px;margin:0 0 4px}
+.hdr{text-align:center;margin-bottom:22px}
+.badge{display:inline-block;font-size:10px;letter-spacing:4px;color:#22d3a5;font-family:'Space Mono',monospace;text-transform:uppercase;margin-bottom:6px}
+.sub{color:#64748b;font-size:12px}
+.card{background:#0f172a;border:1.5px solid #22d3a540;border-radius:16px;padding:15px;margin-bottom:13px;transition:border-color .3s}
+.card.over{border-color:#f87171}.card.warn{border-color:#facc1580}
+.sec-lbl{font-size:10px;color:#64748b;font-family:'Space Mono',monospace;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px}
+.lbl{display:block;font-size:11px;color:#94a3b8;margin-bottom:5px;font-family:'Space Mono',monospace;letter-spacing:1px}
+input[type=text],input[type=number]{width:100%;background:#1e293b;border:1px solid #334155;border-radius:8px;padding:9px 12px;color:#e2e8f0;font-size:15px;outline:none;font-family:'Sarabun',sans-serif;-webkit-appearance:none}
+input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+input[type=range]{width:100%;height:4px;-webkit-appearance:none;appearance:none;background:#1e293b;border-radius:99px;outline:none;margin-top:6px}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#22d3a5;cursor:pointer}
+input[type=range].y::-webkit-slider-thumb{background:#facc15}
+input[type=range].p::-webkit-slider-thumb{background:#a78bfa}
+.fld{margin-bottom:11px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row>.fld{flex:1;min-width:100px}
+.irel{position:relative}.irel input{padding-right:60px}
+.irel .unit{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:10px;color:#64748b;font-family:'Space Mono',monospace;pointer-events:none}
+.btns{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.btn{font-size:10px;padding:3px 9px;border-radius:99px;border:1px solid #334155;background:transparent;color:#64748b;cursor:pointer;font-family:'Space Mono',monospace;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.btn.ag{border-color:#22d3a5;background:#22d3a515;color:#22d3a5}
+.btn.ay{border-color:#facc15;background:#facc1515;color:#facc15}
+.btn.ap{border-color:#a78bfa;background:#a78bfa15;color:#a78bfa}
+.type-row{display:flex;gap:8px;margin-top:6px}
+.type-btn{flex:1;padding:8px 0;border-radius:8px;font-size:12px;font-weight:600;border:1.5px solid #334155;background:#1e293b;color:#64748b;cursor:pointer;transition:all .2s}
+.type-btn.active{border-color:#22d3a5;background:#22d3a520;color:#22d3a5}
+
+/* ── EGAT toggle (checkbox style) ── */
+.egat-toggle{display:flex;align-items:center;gap:10px;margin-bottom:11px;padding:10px 12px;border-radius:10px;border:1.5px solid #334155;background:#1e293b;cursor:pointer;transition:all .25s;-webkit-tap-highlight-color:transparent;user-select:none}
+.egat-toggle.on{border-color:#f59e0b;background:#f59e0b10}
+.egat-check{width:20px;height:20px;border-radius:5px;border:2px solid #334155;background:#0f172a;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.egat-toggle.on .egat-check{border-color:#f59e0b;background:#f59e0b}
+.egat-check-icon{color:#020817;font-size:13px;font-weight:900;display:none}
+.egat-toggle.on .egat-check-icon{display:block}
+.egat-label{font-size:12px;font-weight:600;color:#64748b;transition:color .2s}
+.egat-toggle.on .egat-label{color:#f59e0b}
+.egat-badge{font-size:9px;padding:2px 6px;border-radius:99px;background:#f59e0b20;color:#f59e0b;font-family:'Space Mono',monospace;letter-spacing:1px;display:none}
+.egat-toggle.on .egat-badge{display:inline}
+
+/* ── Star buttons ── */
+.star-row{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+.star-btn{padding:6px 8px;border-radius:8px;font-size:11px;border:1.5px solid #334155;background:#1e293b;color:#64748b;cursor:pointer;transition:all .15s;white-space:nowrap;font-family:'Space Mono',monospace}
+.star-btn.active{border-color:#facc15;background:#facc1520;color:#facc15;font-weight:700}
+.star-btn.active.s0{border-color:#64748b;background:#64748b15;color:#94a3b8}
+.seer-hint{font-size:10px;color:#64748b;margin-top:5px;font-family:'Space Mono',monospace;min-height:16px}
+
+/* cost box */
+.cost-box{margin-top:13px;padding:12px 14px;background:#22d3a510;border:1px solid #22d3a530;border-radius:10px;transition:all .3s}
+.cost-box.over{background:#f8717115;border-color:#f87171}.cost-box.warn{background:#facc1510;border-color:#facc1550}
+.cost-lbl{font-size:10px;color:#94a3b8;margin-bottom:4px}
+.cost-val{font-size:26px;font-weight:800;color:#22d3a5;font-family:'Space Mono',monospace;letter-spacing:-.5px;transition:color .3s}
+.cost-val.rng{font-size:18px}.cost-val.over{color:#f87171}.cost-val.warn{color:#facc15}
+.cost-note{font-size:10px;color:#64748b;margin-top:3px}
+
+.ac-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:13px}
+@media(max-width:480px){.ac-grid{grid-template-columns:1fr}}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:13px}
+.stat{background:#1e293b;border-radius:10px;padding:11px 13px}
+.stat-lbl{font-size:10px;color:#64748b;margin-bottom:3px}
+.stat-val{font-size:18px;font-weight:800;font-family:'Space Mono',monospace;letter-spacing:-.5px}
+.stat-sub{font-size:10px;color:#475569;margin-top:2px}
+.summ{border-radius:12px;padding:13px 15px;border:1px solid #22d3a530;background:#22d3a510;transition:all .3s}
+.summ.bad{border-color:#f8717130;background:#f8717110}
+.summ-head{font-size:12px;color:#94a3b8;margin-bottom:5px}
+.summ-body{font-size:13px;color:#e2e8f0;line-height:1.65}
+.formula{margin-top:12px;font-size:10px;color:#334155;font-family:'Space Mono',monospace;line-height:1.7}
+.divider{height:1px;background:#1e293b;margin:13px 0}
+.manual-row{display:flex;gap:8px;align-items:center}
+.manual-row input{width:90px;flex-shrink:0}
+.star-display{font-size:14px;display:flex;align-items:center;gap:4px}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="badge">AC Efficiency Calculator</div>
+  <h1>เปรียบเทียบแอร์ Inverter / Fix Speed</h1>
+  <p class="sub">คำนวณค่าไฟตามมาตรฐาน มอก. • เปรียบเทียบ SEER • หาจุดคุ้มทุน</p>
+</div>
+
+<!-- Settings -->
+<div class="card">
+  <div class="sec-lbl">⚙ การใช้งาน</div>
+  <div class="row" style="margin-bottom:13px">
+    <div class="fld">
+      <label class="lbl">ชม./วัน: <span id="lbl-h" style="color:#facc15;font-weight:700">8</span></label>
+      <input type="range" class="y" id="sl-h" min="1" max="24" value="8">
+    </div>
+    <div class="fld">
+      <label class="lbl">วัน/เดือน: <span id="lbl-d" style="color:#facc15;font-weight:700">30</span></label>
+      <input type="range" class="y" id="sl-d" min="1" max="31" value="30">
+    </div>
+    <div class="fld">
+      <label class="lbl">คุ้มทุนใน: <span id="lbl-be" style="color:#a78bfa;font-weight:700">24</span> เดือน</label>
+      <input type="range" class="p" id="sl-be" min="6" max="60" step="6" value="24">
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="row">
+    <div class="fld">
+      <label class="lbl">อัตราค่าไฟ (บาท/kWh)</label>
+      <div class="irel"><input type="number" id="inp-rate" step="0.01" min="1" max="10" value="4.5"><span class="unit">฿/kWh</span></div>
+      <div class="btns">
+        <button class="btn" data-g="rate" data-v="3.5">3.5</button>
+        <button class="btn" data-g="rate" data-v="4.0">4.0</button>
+        <button class="btn ay" data-g="rate" data-v="4.5">4.5</button>
+        <button class="btn" data-g="rate" data-v="5.0">5.0</button>
+      </div>
+    </div>
+    <div class="fld">
+      <label class="lbl">งบค่าไฟสูงสุด/เดือน</label>
+      <div class="irel" style="max-width:none"><input type="number" id="inp-budget" step="50" min="100" value="700" style="padding-right:30px"><span class="unit" style="font-family:inherit">฿</span></div>
+      <div class="btns">
+        <button class="btn" data-g="budget" data-v="500">500</button>
+        <button class="btn ag" data-g="budget" data-v="700">700</button>
+        <button class="btn" data-g="budget" data-v="1000">1000</button>
+        <button class="btn" data-g="budget" data-v="1500">1500</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AC Cards -->
+<div class="ac-grid">
+  <!-- Card A -->
+  <div class="card" id="card-a">
+    <div class="sec-lbl">แอร์ตัวที่ 1</div>
+    <!-- EGAT toggle -->
+    <div class="egat-toggle" id="egat-a" onclick="toggleEgat('a')">
+      <div class="egat-check"><span class="egat-check-icon">✓</span></div>
+      <div>
+        <div class="egat-label">เกณฑ์ใหม่ กฟผ. <span class="egat-badge">NEW EGAT</span></div>
+        <div style="font-size:10px;color:#64748b;margin-top:2px">ไม่ติ๊ก = เกณฑ์เก่า (CURRENT)</div>
+      </div>
+    </div>
+    <div class="fld"><label class="lbl">ชื่อรุ่น / ยี่ห้อ</label><input type="text" id="a-name" value="แอร์ A (ราคาถูก)" placeholder="เช่น Mitsubishi MS-GR15"></div>
+    <div class="fld"><label class="lbl">ราคา (บาท)</label><input type="number" id="a-price" value="18000" min="0"></div>
+    <div class="fld">
+      <label class="lbl">BTU</label>
+      <div class="btns" id="btns-a-btu">
+        <button class="btn" data-g="a-btu" data-v="9000">9,000</button>
+        <button class="btn" data-g="a-btu" data-v="12000">12,000</button>
+        <button class="btn ap" data-g="a-btu" data-v="15000">15,000</button>
+        <button class="btn" data-g="a-btu" data-v="18000">18,000</button>
+        <button class="btn" data-g="a-btu" data-v="24000">24,000</button>
+        <button class="btn" data-g="a-btu" data-v="36000">36,000</button>
+        <button class="btn" data-g="a-btu" data-v="48000">48,000</button>
+      </div>
+    </div>
+    <div class="fld">
+      <label class="lbl">ประเภท</label>
+      <div class="type-row">
+        <button class="type-btn" id="a-fix" onclick="setType('a','fix')">Fix Speed</button>
+        <button class="type-btn active" id="a-inv" onclick="setType('a','inv')">Inverter</button>
+      </div>
+    </div>
+    <div class="fld">
+      <label class="lbl">เรตติ้ง <span id="a-std-lbl" style="color:#64748b;font-size:10px">(เกณฑ์เก่า)</span></label>
+      <div class="star-row" id="star-row-a"></div>
+      <div class="seer-hint" id="a-seer-hint"></div>
+    </div>
+    <div class="fld">
+      <label class="lbl">หรือกรอก SEER เอง <span style="color:#64748b;font-weight:400">(override)</span></label>
+      <div class="manual-row">
+        <input type="number" id="a-seer" step="0.1" min="10" max="35" value="18">
+        <div class="star-display" id="a-star-display"></div>
+      </div>
+    </div>
+    <div class="cost-box" id="a-cost-box">
+      <div class="cost-lbl">ค่าไฟต่อเดือน</div>
+      <div class="cost-val" id="a-cost-val">฿0</div>
+      <div class="cost-note" id="a-cost-note"></div>
+    </div>
+  </div>
+
+  <!-- Card B -->
+  <div class="card" id="card-b">
+    <div class="sec-lbl">แอร์ตัวที่ 2</div>
+    <div class="egat-toggle on" id="egat-b" onclick="toggleEgat('b')">
+      <div class="egat-check"><span class="egat-check-icon">✓</span></div>
+      <div>
+        <div class="egat-label">เกณฑ์ใหม่ กฟผ. <span class="egat-badge">NEW EGAT</span></div>
+        <div style="font-size:10px;color:#64748b;margin-top:2px">ไม่ติ๊ก = เกณฑ์เก่า (CURRENT)</div>
+      </div>
+    </div>
+    <div class="fld"><label class="lbl">ชื่อรุ่น / ยี่ห้อ</label><input type="text" id="b-name" value="แอร์ B (ประหยัดไฟ)" placeholder="เช่น Daikin FTKQ15"></div>
+    <div class="fld"><label class="lbl">ราคา (บาท)</label><input type="number" id="b-price" value="25000" min="0"></div>
+    <div class="fld">
+      <label class="lbl">BTU</label>
+      <div class="btns" id="btns-b-btu">
+        <button class="btn" data-g="b-btu" data-v="9000">9,000</button>
+        <button class="btn" data-g="b-btu" data-v="12000">12,000</button>
+        <button class="btn ap" data-g="b-btu" data-v="15000">15,000</button>
+        <button class="btn" data-g="b-btu" data-v="18000">18,000</button>
+        <button class="btn" data-g="b-btu" data-v="24000">24,000</button>
+        <button class="btn" data-g="b-btu" data-v="36000">36,000</button>
+        <button class="btn" data-g="b-btu" data-v="48000">48,000</button>
+      </div>
+    </div>
+    <div class="fld">
+      <label class="lbl">ประเภท</label>
+      <div class="type-row">
+        <button class="type-btn" id="b-fix" onclick="setType('b','fix')">Fix Speed</button>
+        <button class="type-btn active" id="b-inv" onclick="setType('b','inv')">Inverter</button>
+      </div>
+    </div>
+    <div class="fld">
+      <label class="lbl">เรตติ้ง <span id="b-std-lbl" style="color:#f59e0b;font-size:10px">(เกณฑ์ใหม่)</span></label>
+      <div class="star-row" id="star-row-b"></div>
+      <div class="seer-hint" id="b-seer-hint"></div>
+    </div>
+    <div class="fld">
+      <label class="lbl">หรือกรอก SEER เอง <span style="color:#64748b;font-weight:400">(override)</span></label>
+      <div class="manual-row">
+        <input type="number" id="b-seer" step="0.1" min="10" max="35" value="22.5">
+        <div class="star-display" id="b-star-display"></div>
+      </div>
+    </div>
+    <div class="cost-box" id="b-cost-box">
+      <div class="cost-lbl">ค่าไฟต่อเดือน</div>
+      <div class="cost-val" id="b-cost-val">฿0</div>
+      <div class="cost-note" id="b-cost-note"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Analysis -->
+<div class="card" id="analysis-card">
+  <div class="sec-lbl">📊 ผลการวิเคราะห์</div>
+  <div class="stats-grid">
+    <div class="stat"><div class="stat-lbl">ประหยัดได้/เดือน</div><div class="stat-val" id="st-saving">-</div><div class="stat-sub" id="st-saving-sub"></div></div>
+    <div class="stat"><div class="stat-lbl">ประหยัดได้/ปี</div><div class="stat-val" id="st-annual" style="color:#facc15">-</div><div class="stat-sub">ถ้า B ประหยัดกว่า</div></div>
+    <div class="stat"><div class="stat-lbl">ราคาต่างกัน</div><div class="stat-val" id="st-diff" style="color:#a78bfa">-</div><div class="stat-sub" id="st-diff-sub"></div></div>
+    <div class="stat"><div class="stat-lbl">จุดคุ้มทุน</div><div class="stat-val" id="st-be">-</div><div class="stat-sub" id="st-be-sub"></div></div>
+  </div>
+  <div class="summ" id="summ-box">
+    <div class="summ-head" id="summ-head"></div>
+    <div class="summ-body" id="summ-body"></div>
+  </div>
+  <div class="formula" id="formula"></div>
+</div>
+
+<script>
+// ─── SEER Tables ────────────────────────────────────────────────────────────
+// btu group: small=≤8kW(≤27312BTU), large=8-12kW(27312-40968BTU), xlarge=>12kW(>40968BTU)
+// stars: 0=no star, 1-3=old, 1-5=new (mapped as 0,1,2,3,4,5 index)
+
+// CURRENT (เกณฑ์เก่า) — max 3 stars
+const TBL_CURRENT = {
+  fix: {
+    small: [{s:0,mn:12.85,mx:13.84},{s:1,mn:13.85,mx:14.84},{s:2,mn:14.85,mx:15.84},{s:3,mn:15.85,mx:99}],
+    large: [{s:0,mn:12.40,mx:13.39},{s:1,mn:13.40,mx:14.39},{s:2,mn:14.40,mx:15.39},{s:3,mn:15.40,mx:99}],
+  },
+  inv: {
+    small: [{s:0,mn:15.00,mx:17.49},{s:1,mn:17.50,mx:19.99},{s:2,mn:20.00,mx:22.49},{s:3,mn:22.50,mx:99}],
+    large: [{s:0,mn:14.00,mx:16.49},{s:1,mn:16.50,mx:18.99},{s:2,mn:19.00,mx:21.49},{s:3,mn:21.50,mx:99}],
+  },
+};
+
+// NEW EGAT — 6 levels: 5, 5★, 5★★, 5★★★, 5★★★★, 5★★★★★
+// stored as s=0..5
+const TBL_NEWEGAT = {
+  fix: {
+    small: [{s:0,mn:13.17,mx:13.70},{s:1,mn:13.71,mx:14.23},{s:2,mn:14.24,mx:14.77},{s:3,mn:14.78,mx:15.30},{s:4,mn:15.31,mx:15.84},{s:5,mn:15.85,mx:99}],
+    large: [{s:0,mn:12.56,mx:13.12},{s:1,mn:13.13,mx:13.69},{s:2,mn:13.70,mx:14.25},{s:3,mn:14.26,mx:14.82},{s:4,mn:14.83,mx:15.39},{s:5,mn:15.40,mx:99}],
+  },
+  inv: {
+    small: [{s:0,mn:17.06,mx:18.55},{s:1,mn:18.56,mx:20.05},{s:2,mn:20.06,mx:21.55},{s:3,mn:21.56,mx:23.05},{s:4,mn:23.06,mx:24.55},{s:5,mn:24.56,mx:99}],
+    large: [{s:0,mn:16.04,mx:17.15},{s:1,mn:17.16,mx:18.27},{s:2,mn:18.28,mx:19.38},{s:3,mn:19.39,mx:20.50},{s:4,mn:20.51,mx:21.62},{s:5,mn:21.63,mx:99}],
+    xlarge:[{s:0,mn:14.00,mx:15.49},{s:1,mn:15.50,mx:16.99},{s:2,mn:17.00,mx:18.49},{s:3,mn:18.50,mx:19.99},{s:4,mn:20.00,mx:21.49},{s:5,mn:21.50,mx:99}],
+  },
+};
+
+// BTU → group
+function btuGroup(btu, newEgat, type){
+  const kw = btu / 3412;
+  if(newEgat && type==='inv' && kw > 12) return 'xlarge';
+  if(kw <= 8) return 'small';
+  return 'large';
+}
+
+function getTable(type, btu, newEgat){
+  const tbl = newEgat ? TBL_NEWEGAT : TBL_CURRENT;
+  const grp = btuGroup(btu, newEgat, type);
+  return tbl[type][grp] || tbl[type]['large'];
+}
+
+function getSeerRange(type, btu, stars, newEgat){
+  const rows = getTable(type, btu, newEgat);
+  const row = rows.find(r => r.s === stars);
+  if(!row) return null;
+  // sensible cap for top tier
+  const capMax = row.mx===99 ? row.mn + 3 : row.mx;
+  return {min: row.mn, max: capMax, isTop: row.mx===99};
+}
+
+function getStarsFromSeer(type, btu, seer, newEgat){
+  const rows = getTable(type, btu, newEgat);
+  for(let i=rows.length-1;i>=0;i--){ if(seer>=rows[i].mn) return rows[i].s; }
+  return -1;
+}
+
+// Star labels
+const LABELS_CURRENT = ['—','★','★★','★★★'];
+const LABELS_NEW = ['5','5★','5★★','5★★★','5★★★★','5★★★★★'];
+
+function starLabel(s, newEgat){
+  return newEgat ? (LABELS_NEW[s]||'?') : (LABELS_CURRENT[s]||'—');
+}
+
+function seerColor(s, newEgat){
+  if(newEgat){
+    return s>=5?'#22d3a5':s>=4?'#34d399':s>=3?'#facc15':s>=2?'#fb923c':s>=1?'#f87171':'#94a3b8';
+  }
+  return s>=3?'#22d3a5':s===2?'#facc15':s===1?'#fb923c':'#94a3b8';
+}
+
+function calcCost(btu, seer, h, d, rate){ return (btu/(seer*1000))*h*d*rate; }
+function fmt(n){ return Math.round(n).toLocaleString('th-TH'); }
+
+// ─── State ──────────────────────────────────────────────────────────────────
+const S = {
+  hours:8, days:30, breakeven:24, rate:4.5, budget:700,
+  a:{ name:'แอร์ A (ราคาถูก)', price:18000, btu:15000, type:'inv', stars:1, seer:18.75, mode:'star', newEgat:false },
+  b:{ name:'แอร์ B (ประหยัดไฟ)', price:25000, btu:15000, type:'inv', stars:3, seer:22.5, mode:'star', newEgat:true },
+};
+
+// ─── Build star buttons ──────────────────────────────────────────────────────
+function buildStarRow(k){
+  const ac = S[k];
+  const row = document.getElementById('star-row-'+k);
+  const maxS = ac.newEgat ? 5 : 3;
+  row.innerHTML = '';
+  for(let s=0;s<=maxS;s++){
+    const btn = document.createElement('button');
+    btn.className = 'star-btn' + (ac.stars===s && ac.mode==='star' ? (s===0?' active s0':' active') : '');
+    btn.dataset.g = k+'-star';
+    btn.dataset.v = s;
+    btn.textContent = starLabel(s, ac.newEgat);
+    row.appendChild(btn);
+  }
+  // update std label
+  const lbl = document.getElementById(k+'-std-lbl');
+  lbl.textContent = ac.newEgat ? '(เกณฑ์ใหม่ กฟผ.)' : '(เกณฑ์เก่า)';
+  lbl.style.color = ac.newEgat ? '#f59e0b' : '#64748b';
+}
+
+// ─── Toggle EGAT ─────────────────────────────────────────────────────────────
+function toggleEgat(k){
+  S[k].newEgat = !S[k].newEgat;
+  document.getElementById('egat-'+k).className = 'egat-toggle'+(S[k].newEgat?' on':'');
+  // clamp stars
+  const maxS = S[k].newEgat ? 5 : 3;
+  if(S[k].stars > maxS) S[k].stars = maxS;
+  buildStarRow(k);
+  render();
+}
+
+// ─── setType ─────────────────────────────────────────────────────────────────
+function setType(k, type){
+  S[k].type = type;
+  document.getElementById(k+'-fix').className = 'type-btn'+(type==='fix'?' active':'');
+  document.getElementById(k+'-inv').className = 'type-btn'+(type==='inv'?' active':'');
+  render();
+}
+
+// ─── Render ───────────────────────────────────────────────────────────────────
+function render(){
+  const {hours,days,breakeven,rate,budget} = S;
+  document.getElementById('lbl-h').textContent = hours;
+  document.getElementById('lbl-d').textContent = days;
+  document.getElementById('lbl-be').textContent = breakeven;
+
+  ['a','b'].forEach(k => {
+    const ac = S[k];
+    const range = ac.mode==='star' ? getSeerRange(ac.type, ac.btu, ac.stars, ac.newEgat) : null;
+
+    // SEER hint
+    const hint = document.getElementById(k+'-seer-hint');
+    hint.textContent = (ac.mode==='star' && range)
+      ? `SEER ${range.min} – ${range.max}${range.isTop?'+':''}`
+      : '';
+
+    // manual star display
+    const disp = document.getElementById(k+'-star-display');
+    if(ac.mode==='manual'){
+      const ms = getStarsFromSeer(ac.type, ac.btu, ac.seer, ac.newEgat);
+      const col = seerColor(ms, ac.newEgat);
+      const lbl = ms>=0 ? starLabel(ms, ac.newEgat) : '< min';
+      disp.innerHTML = `<span style="color:${col};font-size:14px;font-family:'Space Mono',monospace">${lbl}</span>`;
+    } else { disp.innerHTML=''; }
+
+    // cost
+    let cLo, cHi, isRange=false;
+    if(ac.mode==='manual'){
+      cLo=cHi=calcCost(ac.btu, ac.seer, hours, days, rate);
+    } else if(range){
+      cLo=calcCost(ac.btu, range.max, hours, days, rate);
+      cHi=calcCost(ac.btu, range.min, hours, days, rate);
+      isRange=true;
+    } else { cLo=cHi=0; }
+
+    const over=cHi>budget, warn=!over&&cLo<=budget&&cHi>budget;
+    document.getElementById('cost-box-'+k)||0;
+    const box=document.getElementById(k+'-cost-box');
+    const val=document.getElementById(k+'-cost-val');
+    const note=document.getElementById(k+'-cost-note');
+    const card=document.getElementById('card-'+k);
+
+    box.className='cost-box'+(over?' over':warn?' warn':'');
+    val.className='cost-val'+(isRange?' rng':'')+(over?' over':warn?' warn':'');
+    card.className='card'+(over?' over':warn?' warn':'');
+    val.textContent=isRange?`฿${fmt(cLo)} – ฿${fmt(cHi)}`:`฿${fmt(cLo)}`;
+    note.textContent=over?`⚠ เกิน budget ~${fmt(cLo-budget)}–${fmt(cHi-budget)} บาท`
+      :warn?`⚠ อาจเกิน budget (ขึ้นกับ SEER จริง)`:`✓ อยู่ใน budget`;
+  });
+
+  // mid cost
+  function midCost(ac){
+    if(ac.mode==='manual') return calcCost(ac.btu, ac.seer, hours, days, rate);
+    const r=getSeerRange(ac.type, ac.btu, ac.stars, ac.newEgat);
+    if(!r) return 0;
+    return calcCost(ac.btu, (r.min+r.max)/2, hours, days, rate);
+  }
+  const midA=midCost(S.a), midB=midCost(S.b);
+  const saving=midA-midB, priceDiff=S.b.price-S.a.price;
+  const monthsBE=saving>0?priceDiff/saving:Infinity;
+  const worthIt=monthsBE<=breakeven, maxPremium=saving>0?saving*breakeven:0;
+
+  const savEl=document.getElementById('st-saving');
+  savEl.textContent=saving>0?`฿${fmt(saving)}`:`฿${fmt(Math.abs(saving))} แพงกว่า`;
+  savEl.style.color=saving>0?'#22d3a5':'#f87171';
+  document.getElementById('st-saving-sub').textContent=`(${S.b.name} vs ${S.a.name})`;
+  document.getElementById('st-annual').textContent=saving>0?`฿${fmt(saving*12)}`:'-';
+  document.getElementById('st-diff').textContent=`฿${Math.abs(priceDiff).toLocaleString('th-TH')}`;
+  document.getElementById('st-diff-sub').textContent=priceDiff>0?'B แพงกว่า A':priceDiff<0?'B ถูกกว่า A':'เท่ากัน';
+  const beEl=document.getElementById('st-be');
+  beEl.textContent=monthsBE===Infinity?'ไม่คุ้ม':`${monthsBE.toFixed(1)} เดือน`;
+  beEl.style.color=monthsBE<=breakeven?'#22d3a5':'#f87171';
+  document.getElementById('st-be-sub').textContent=monthsBE===Infinity
+    ?'B ไม่ประหยัดกว่า A'
+    :worthIt?`✓ คุ้มใน ${breakeven} เดือน`:`✗ ไม่คุ้มใน ${breakeven} เดือน`;
+  document.getElementById('analysis-card').style.borderColor=worthIt?'#22d3a540':'#f8717140';
+
+  const sbox=document.getElementById('summ-box');
+  sbox.className='summ'+(worthIt?'':' bad');
+  document.getElementById('summ-head').innerHTML=
+    `💡 <strong>สรุป:</strong> คุ้มภายใน <span style="color:#a78bfa;font-weight:700">${breakeven} เดือน (${(breakeven/12).toFixed(1)} ปี)</span>`;
+  document.getElementById('summ-body').innerHTML=saving>0
+    ?`แอร์ B ประหยัดค่าไฟได้เฉลี่ย <span style="color:#22d3a5;font-weight:700">฿${fmt(saving)}/เดือน</span>
+      → ราคา B ควรแพงกว่า A ได้ไม่เกิน <span style="color:#facc15;font-weight:800;font-size:16px;font-family:'Space Mono',monospace">฿${fmt(maxPremium)}</span><br>
+      <span style="font-size:11px;color:#64748b">ปัจจุบัน B แพงกว่า ฿${Math.abs(priceDiff).toLocaleString('th-TH')} → ${
+        worthIt?`✅ คุ้มค่า! จุดคุ้มทุน ${monthsBE.toFixed(1)} เดือน`:`❌ ยังแพงเกินไป ฿${fmt(priceDiff-maxPremium)}`
+      }</span>`
+    :`<span style="color:#f87171">⚠ แอร์ B ไม่ได้ประหยัดไฟกว่า A → ไม่มีจุดคุ้มทุน</span>`;
+  document.getElementById('formula').innerHTML=
+    `สูตร: Power (kW) = BTU ÷ (SEER × 1000) | ค่าไฟ = Power × ชม./วัน × วัน × ${rate} บาท/kWh<br>คุ้มทุน = ส่วนต่างราคา ÷ ค่าไฟที่ประหยัดได้ต่อเดือน (ใช้ SEER กลาง bracket)`;
+}
+
+// ─── Event delegation ────────────────────────────────────────────────────────
+document.addEventListener('click', e => {
+  const btn = e.target.closest('[data-g]');
+  if(!btn) return;
+  const g=btn.dataset.g, v=btn.dataset.v;
+  document.querySelectorAll(`[data-g="${g}"]`).forEach(b=>b.classList.remove('ag','ay','ap','active','s0'));
+
+  if(g==='rate'){       S.rate=parseFloat(v); document.getElementById('inp-rate').value=v; btn.classList.add('ay'); }
+  else if(g==='budget'){ S.budget=parseFloat(v); document.getElementById('inp-budget').value=v; btn.classList.add('ag'); }
+  else if(g==='a-btu'){ S.a.btu=parseInt(v); btn.classList.add('ap'); }
+  else if(g==='b-btu'){ S.b.btu=parseInt(v); btn.classList.add('ap'); }
+  else if(g==='a-star'||g==='b-star'){
+    const k=g[0], sv=parseInt(v);
+    S[k].stars=sv; S[k].mode='star';
+    btn.classList.add(sv===0?'active s0':'active');
+    const r=getSeerRange(S[k].type, S[k].btu, sv, S[k].newEgat);
+    if(r){ S[k].seer=parseFloat(((r.min+r.max)/2).toFixed(2)); document.getElementById(k+'-seer').value=S[k].seer; }
+  }
+  render();
+});
+
+// sliders
+['h','d','be'].forEach(id=>{
+  document.getElementById('sl-'+id).addEventListener('input',e=>{
+    if(id==='h') S.hours=+e.target.value;
+    else if(id==='d') S.days=+e.target.value;
+    else S.breakeven=+e.target.value;
+    render();
+  });
+});
+
+document.getElementById('inp-rate').addEventListener('input',e=>{ S.rate=parseFloat(e.target.value)||4.5; document.querySelectorAll('[data-g=rate]').forEach(b=>b.classList.remove('ay')); render(); });
+document.getElementById('inp-budget').addEventListener('input',e=>{ S.budget=parseFloat(e.target.value)||700; document.querySelectorAll('[data-g=budget]').forEach(b=>b.classList.remove('ag')); render(); });
+document.getElementById('a-name').addEventListener('input',e=>{ S.a.name=e.target.value; render(); });
+document.getElementById('b-name').addEventListener('input',e=>{ S.b.name=e.target.value; render(); });
+document.getElementById('a-price').addEventListener('input',e=>{ S.a.price=+e.target.value||0; render(); });
+document.getElementById('b-price').addEventListener('input',e=>{ S.b.price=+e.target.value||0; render(); });
+document.getElementById('a-seer').addEventListener('input',e=>{ S.a.seer=parseFloat(e.target.value)||15; S.a.mode='manual'; document.querySelectorAll('[data-g=a-star]').forEach(b=>b.classList.remove('active','s0')); render(); });
+document.getElementById('b-seer').addEventListener('input',e=>{ S.b.seer=parseFloat(e.target.value)||15; S.b.mode='manual'; document.querySelectorAll('[data-g=b-star]').forEach(b=>b.classList.remove('active','s0')); render(); });
+
+// init
+buildStarRow('a');
+buildStarRow('b');
+render();
+</script>
+</body>
+</html>
